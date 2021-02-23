@@ -1,0 +1,132 @@
+\documentclass{article}
+\usepackage{amsmath,mathtools}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage{braket}
+
+\title{Symmetric Tensor Index Mappings Between Upper Triangular Multidimensional and Flattened (Raveled) Indices}
+\date{11-30-2020}
+\author{Adam Abbott}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Given a symmetric $n \times n$ symmetric matrix,
+
+\begin{equation*}
+\begin{pmatrix}
+a_{1,1} & a_{1,2} & a_{1,3} & \cdots & a_{1,n} \\
+a_{1,2} & a_{2,2} & a_{2,3} & \cdots & a_{2,n} \\
+a_{1,3} & a_{2,3} & a_{3,3} & \cdots & a_{3,n} \\
+\vdots  & \vdots  & \vdots  & \ddots & \vdots  \\
+a_{1,n} & a_{2,n}& a_{3,n}  & \cdots & a_{n,n} 
+\end{pmatrix}
+\end{equation*}
+
+A set of unique elements can be obtained by collecting only the upper triangle or lower triangle into a vector, including the diagonal. 
+This enables efficient storage in a computer program.
+
+\begin{equation*}
+\left[ a_{1,1}, a_{1,2}, a_{1,3} , \cdots , a_{1,n} , a_{2,2} , a_{2,3} , \cdots , a_{2,n} , a_{3,3} , \cdots , a_{3,n} , \cdots , a_{n,n} \right]
+\end{equation*}
+
+Looking at a more concrete example of a $6 \times 6$ matrix, and filling the upper triangle row-wise with integers starting from 0, we are able to derive 
+a mapping from a \textbf{multidimensional upper triangle index}  $[i,j]$ for $i \leq j$ to the \textbf{flattened upper triangle index}, which we will call $z$:
+
+\begin{equation*}
+\begin{pmatrix}
+0 & 1 & 2 & 3 & 4 & 5 \\
+  & 6 & 7 & 8 & 9 & 10 \\
+  &   & 11 & 12 & 13 & 14 \\
+  &   &    & 15 & 16 & 17 \\
+  &   &    &    & 18 & 19 \\
+  &   &    &    &    & 20 \\
+\end{pmatrix}
+\end{equation*}
+
+For example, using zero-based indexing, if we index this matrix with the pair $[2,4]$ we obtain 16.
+Thus, if we had \textit{any} $6 \times 6$ symmetric matrix, we would know how to build the flattened vector of unique elements,
+for example we would know to take the element at $[2,4]$ and place it at index $16$ in our vector, as informed by our above mapping.
+In reverse order, if we only had the vector of unique elements of the upper triangle of a symmetric matrix and we wished to construct the full matrix,
+we would know that the element at index $16$ in this vector should be placed at position $[2,4]$.
+This reverse mapping can also be achieved with lookup-array procedure, but in this case, we wish to map 16 to $[2,4]$, or generally any flattened index $z$ to the multidimensional pair $[i,j]$ such that $i \leq j$.
+The reverse mapping array can be obtained by taking all combinations with repitition of size two from a list of  6 objects, which are sorted such that each
+row is elementwise $\leq$ then the next row.
+
+\begin{equation*}
+\begin{pmatrix}
+0& 0\\ 
+0& 1\\
+0& 2\\
+0& 3\\
+0& 4\\
+0& 5\\
+1& 1\\
+1& 2\\
+1& 3\\
+1& 4\\
+1& 5\\
+2& 2\\
+2& 3\\
+2& 4\\
+2& 5\\
+3& 3\\
+3& 4\\
+3& 5\\
+4& 4\\
+4& 5\\
+5& 5\\
+\end{pmatrix}
+\end{equation*}
+
+In the general case of an $n \times n$ symmetric matrix, however, we would ideally not have to construct any arrays for mapping between the indices. 
+Ideally, we would have an equation which given $[i,j]$ gives the flattened index $z$, and another equation for vice versa.
+TODO add equations here.
+
+However, it is trickier to define these equations in the general case of mapping any rank $r$ tensor's upper triangle multidimensional index to the flattened index.
+We will derive these relations in the next section.
+
+\section{Generalized Index Mappings for Upper Triangles of Symmetric Tensors}
+As has been laid out beautifully elsewhere \footnote{Components of totally symmetric and anti-symmetirc tensors, http://www.physics.mcgill.ca/~yangob/symmetric\%20tensor.pdf},
+the number of elements in the flattened upper triangle of a rank $r$ tensor with dimension size $n$, which we will call $\Delta$, is 
+
+\begin{equation*}
+\Delta = 
+\begin{pmatrix}
+n + r - 1 \\
+r \\
+\end{pmatrix}
+= \frac{(n + r - 1)!}{r!(n-1)!} = \frac{(n + r - 1)(n + r - 2) \cdots (n + 1) (n)}{r!}
+\end{equation*}
+
+We are now ready to define functions which take in a sorted multidimensional index ($i \leq j \leq k ...$) and return a flattened upper triangle index, for any rank symmetric tensor.
+These functions we wil denote as $Z_r(...)$ where $r$ is the rank of the symmetric tensor the equation applies to.
+As it turns out, each subsequent rank equation is most concisely defined in terms of the equations for previous ranks, so we choose to define them recursively here.
+
+For a particular dimension size $n$, we first denote a series of variables $\Delta_0,\Delta_1,\Delta_2, \Delta_3, ... \Delta_r, $ which represent the number of elements 
+in the upper triangle of a rank $r$ symmetric tensor, so that
+
+\begin{align*}
+\Delta_0 &= 1 \\
+\Delta_1 &= n \\
+\Delta_2 &= \frac{n(n+1)}{2} \\
+\Delta_3 &= \frac{n(n+1)(n+2)}{6} \\
+\cdots   & \\
+\Delta_r &= \frac{n(n+1)(n+2)\cdots (n + (r-1)}{r!} \\
+\end{align*}
+
+Now for every rank, we can write down the following functions.
+Note that for the sake of a clear and clean pattern, we write down many redundant or non necessary symbols, such as the passing of argument $n$ to functions that have no dependence on it.
+
+\begin{align*}
+Z_0(n)& = 0 \\
+Z_1(i,n)& = Z_0(n-i) + \sum_{a=1}^{i} \Delta_0  \\
+Z_2(i,j,n)& = Z_1(j-i,n-i) + \sum_{a=1}^{i} \Delta_1 - \sum_{b=1}^{a-1} \Delta_0  \\
+Z_3(i,j,k,n)& = Z_2(j-i,k-i,n-i) + \sum_{a=1}^{i} \Delta_2 - \sum_{b=1}^{a-1} \Delta_1 + \sum_{c=1}^{b-1} \Delta_0  \\
+Z_4(i,j,k,l,n)& = Z_3(j-i,k-i,l-i,n-i) + \sum_{a=1}^{i} \Delta_3 - \sum_{b=1}^{a-1} \Delta_2 + \sum_{c=1}^{b-1} \Delta_1  - \sum_{d=1}^{c-1} \Delta_0  \\
+\end{align*}
+
+It is thus easy to write down the relation for any symmetric tensor and simplify. 
+Speaking of which, these equations can be simplified tremendously, however the simplifications will spoil the clear mathematical pattern.
+
+\end{document}
