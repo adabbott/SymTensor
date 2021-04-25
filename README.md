@@ -1,49 +1,38 @@
-
-This repo serves as a reference implementation and a set of notes regarding
-the mathematics required for creating an index mapping between elements in
-a general symmetric tensor and its flattened upper triangle. 
-For example, a symmetric matrix has an equivalent upper and lower triangle,
-and in the interest of performance one may wish to work with 
-just the upper triangle as a flattened vector. 
-The mapping of an index (i,j) to index z in the flattened vector representation 
-is trivial, but the general case of a rank _r_ symmetric tensor mapping
-an index to its flattened vector form is more complicated.
-
-Here I derive analytic formulae which create a mapping multidimensional and unique single dimensional
-indices, and include a recursion implementation in Python. 
-
-By "upper triangle" of a totally symmetric tensor we mean all elements whose index [i,j,k,...] is such that i <= j <= k <= ...  
-Some have referred to this section as the "upper hypertriangle" of a tensor.
-These indices can be found easily in Python using itertools.
-For a tensor with _r_ (rank) dimensions of size _n_: 
-
-```python
-from itertools import combinations_with_replacement as cwr
-import numpy as np
-
-rank = 2
-size = 6
-arr = np.arange(size)
-
-combos = np.asarray(list(cwr(dim,rank)))
+# Symmetric Tensor Index Mappings
+Suppose you have a symmetric tensor, but for the purpose of optimal memory management
+you only want to store and work with the the unique elements. For example, the symmetric matrix 
+```
+A = [ 0  1  2  3 ]
+    [ 1  4  5  6 ]
+    [ 2  5  7  8 ]
+    [ 3  6  8  9 ]
+```
+can be fully represented by a one-dimensional vector containing the elements of the upper triangle: 
+```
+A' = [ 0  1  2  3  4  5  6  7  8  9]
 ```
 
-The result "combos" is every combination of indices such that i <= j, and i,j can run from 0 to 5. 
-Indexing combos with some index idx with `combos[idx]` maps the _flattened generalized upper triangle_ index idx to the multidimensional index [i,j].
+Mapping the index of elements in the full matrix to elements in the one-dimensional minimal representation
+is trivial in this case. For a given 0-based index pair 
+<p align="center">
+<img src="images/eqn0.png" alt="eqn0" width="40"/>
+<\p>
+    
+which indicate the address of an element in the matrix A,
+the corresponding 1d index in the flattened upper triangle A' can be found by 
 
-Given a pair `[i,j]`, you can also use binary search on `combos` to retrieve the flattened upper triangle index.
-In this way, `combos` can serve as a mapping from the flattened upper triangle index to a unique multidimensional index, and vice versa. 
-This is useful for mapping between frameworks which refer to the whole tensor and just one set of unique elements of the tensor.
-The above script can be applied to any rank tensor of any dimension size by adjusting the `rank` and `size` variables.  
-However, this requires one to store an array, effectively using it as a lookup table.
+<img src="images/eqn1.png" alt="eqn1" width="300"/>
+    
+where n is the dimension size, in this case 4. It is  more tricky to derive is an analogous equation for the general case of an arbitrary rank symmetric tensor. That is, for a symmetric tensor of rank r, given a multidimensional index, we seek an expression to find the 1d index of the corresponding element in the flattened upper **hypertriangle**, which we call z. 
+    
+<img src="images/eqn2.png" alt="eqn2" width="200"/>
 
-In the notes here I am interested in finding analytic formulae for mapping between the flattened upper triangle index 
-and the unique multidimensional indices, and vice versa. This way, we do not need to generate the intermediate `combos` which essentially 
-is serving as a lookup array. Computationally, this constitutes trading the memory overhead required to hold `combos` and the compute required to compute it
-for instead functions which purely use operations involving `i`, `j`, and `size` to compute the flattened index. 
+It is very likely such a relation has been derived before, but I could not find a reference after quite a lot of seaching around.
 
-This is trivial in the 2-dimensional case, where you have a symmetric matrix and you want to map a pair of upper triangle indices [i,j] to the flattened 
-upper triangle index. In fact, functions such as `numpy.triu_indices` can handle this for you.  I have not been able to find anywhere general formula
-for arbitrary rank tensors, so here I derive them. 
-
+This repo serves as a reference implementation and a set of notes regarding the above problem. In the code folder is a recursive Python implementation of the index mapping. In the future, this repo may be extended to find the reverse mapping (1d index to multidimensional index, for a certain rank and dimension size) or perhaps explore implementations which take advantage of these concepts for the case of exploiting efficiencies in tensor contractions. 
+    
+# The Relation    
+Without proof or derivation, this is the result, in its non-optimal but most descriptive form:
+    
+<img src="images/summary.pdf" alt="summary" width="500"/>
 
