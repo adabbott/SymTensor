@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage[a4paper,top=0.5cm,bottom=1.5cm,left=1.5cm,right=1.5cm,marginparwidth=1.75cm]{geometry}
+\usepackage{amsmath,mathtools}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage{braket}
+
+\begin{document}
+\Large
+Let $n$ be the dimension size of a symmetric rank $r$ tensor.
+Define the following quantities $\Delta_r$, which represent the number of unique elements in the 
+upper hypertriangle of a tensor of rank $r$:
+\begin{flalign*}
+\Delta_0 &= 1 \\
+\Delta_1 &= n \\
+\Delta_2 &= \frac{n(n+1)}{2} \\
+\Delta_3 &= \frac{n(n+1)(n+2)}{6} \\
+\cdots   & \\
+\Delta_r &= \frac{n(n+1)(n+2)\cdots (n + (r-1))}{r!} \\
+\end{flalign*}
+
+We now can define the functions $Z_r$, which map an element's multidimensional index  ($i \leq j \leq k ...$)
+to the corresponding one-dimensional index in the vector containing the flattened upper hypertriangle of the tensor.
+
+%Functions $Z_r$ which map a multidimensional index  ($i \leq j \leq k ...$) corresponding to the address of an element in the upper triangle of a symmetric tensor of rank $r$ and dimension size $n$   
+%to the index corresponding to the same element in the \textbf{flattened upper-triangle vector}, 
+%which is the row-wise ravelled (flattened) upper triangle of the symmetric tensor.
+%In other words, the functions map the $r$-dimensional upper triangular symmetric tensor elements to the 1-dimensional vector of unique symmetric tensor elements.
+%
+%\begin{flalign*}
+%\Delta_0 &= 1 \\
+%\Delta_1 &= n \\
+%\Delta_2 &= \frac{n(n+1)}{2} \\
+%\Delta_3 &= \frac{n(n+1)(n+2)}{6} \\
+%\cdots   & \\
+%\Delta_r &= \frac{n(n+1)(n+2)\cdots (n + (r-1)}{r!} \\
+%\end{flalign*}
+
+\begin{flalign*}
+Z_0(n)& = 0 \\
+Z_1(i,n)& = Z_0(n-i) + \sum_{a=1}^{i} \Delta_0  \\
+Z_2(i,j,n)& = Z_1(j-i,n-i) + \sum_{a=1}^{i} \Delta_1 - \sum_{b=1}^{a-1} \Delta_0  \\
+Z_3(i,j,k,n)& = Z_2(j-i,k-i,n-i) + \sum_{a=1}^{i} \Delta_2 - \sum_{b=1}^{a-1} \Delta_1 + \sum_{c=1}^{b-1} \Delta_0  \\
+Z_4(i,j,k,l,n)& = Z_3(j-i,k-i,l-i,n-i) + \sum_{a=1}^{i} \Delta_3 - \sum_{b=1}^{a-1} \Delta_2 + \sum_{c=1}^{b-1} \Delta_1  - \sum_{d=1}^{c-1} \Delta_0  \\
+\end{flalign*}
+
+\end{document}
