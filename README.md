@@ -13,17 +13,18 @@ A' = [ 0  1  2  3  4  5  6  7  8  9]
 ```
 
 Mapping the index of elements in the full matrix to elements in the one-dimensional minimal representation
-is trivial in this case. For a given 0-based index pair 
-<p align="center">
+is trivial in this case. For a given 0-based index pair  
+
 <img src="images/eqn0.png" alt="eqn0" width="40"/>
-<\p>
     
 which indicate the address of an element in the matrix A,
 the corresponding 1d index in the flattened upper triangle A' can be found by 
 
 <img src="images/eqn1.png" alt="eqn1" width="300"/>
     
-where n is the dimension size, in this case 4. It is  more tricky to derive is an analogous equation for the general case of an arbitrary rank symmetric tensor. That is, for a symmetric tensor of rank r, given a multidimensional index, we seek an expression to find the 1d index of the corresponding element in the flattened upper **hypertriangle**, which we call z. 
+where n is the dimension size, in this case 4. 
+
+It is much more difficult to derive an analogous equation for the general case of an arbitrary-rank symmetric tensor. That is, for a symmetric tensor of rank r, given a multidimensional index, we seek an expression to find the 1d index of the corresponding element in the flattened upper **hypertriangle** of that same tensor, which we call z. 
     
 <img src="images/eqn2.png" alt="eqn2" width="200"/>
 
@@ -33,6 +34,7 @@ This repo serves as a reference implementation and a set of notes regarding the 
     
 # The Relation    
 Without proof or derivation, this is the result, in its non-optimal but most descriptive form:
+
+![summary](images/summary.png)
     
-<img src="images/summary.pdf" alt="summary" width="500"/>
 
