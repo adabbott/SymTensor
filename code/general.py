@@ -43,6 +43,10 @@ def flatten(n, rank, *args, result=0):
         return flatten(n-i, rank-1, *new_args, result=result)
 
 def test(n, rank):
+    """
+    Using combinations with replacement to generate 
+    index mappings and check against recursive implementation.
+    """
     dim = np.arange(n)
     combos = np.asarray(list(cwr(dim, rank)))
     arr = np.zeros(rank * (n,), dtype=int)
